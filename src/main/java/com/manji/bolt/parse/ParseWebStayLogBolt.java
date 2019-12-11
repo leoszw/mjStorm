@@ -47,7 +47,7 @@ public class ParseWebStayLogBolt implements IRichBolt {
         HashMap hashMap = ParseLogUtil.parseLog(input.getString(0),input.getString(1));
 
         if (hashMap != null && hashMap.get("times") != null) {
-            //公共属性
+            //公共 属性
             timestamp = HashMapUtil.getStrFromHashMap("timestamp",hashMap);     //数据时间Long型
             event = HashMapUtil.getStrFromHashMap("event",hashMap);     //事件名称
 
