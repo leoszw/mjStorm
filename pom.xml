@@ -14,7 +14,7 @@
             <artifactId>storm-core</artifactId>
             <version>1.2.3</version>
 <!--            打包时需要去掉这个依赖(打开注释)-->
-            <scope>provided</scope>
+<!--            <scope>provided</scope>-->
         </dependency>
 
         <dependency>
