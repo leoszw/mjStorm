@@ -3,6 +3,7 @@ package com.manji.bolt.save;
 import com.manji.utils.DateUtils;
 import com.manji.utils.HbaseUtil;
 import com.manji.utils.PerfixEnum;
+import org.apache.commons.lang.StringUtils;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.IRichBolt;
@@ -59,11 +60,12 @@ public class SaveVisitorInfoBolt implements IRichBolt {
 
                 HbaseUtil.addRow(tableName, appName + distinctId, CF, "dataTime", timestamp);
                 HbaseUtil.addRow(tableName, appName + distinctId, CF, "version", version.replaceAll(PerfixEnum.VERSION.getCode(), ""));
-                HbaseUtil.addRow(tableName, appName + distinctId, CF, "province", version.replaceAll(PerfixEnum.PROVINCE.getCode(), ""));
-                HbaseUtil.addRow(tableName, appName + distinctId, CF, "os", version.replaceAll(PerfixEnum.OS.getCode(), ""));
-                HbaseUtil.addRow(tableName, appName + distinctId, CF, "model", version.replaceAll(PerfixEnum.MODEL.getCode(), ""));
-                HbaseUtil.addRow(tableName, appName + distinctId, CF, "resolutionRatio", version.replaceAll(PerfixEnum.RESOLUTIONRATIO.getCode(), ""));
-                HbaseUtil.addRow(tableName, appName + distinctId, CF, "networkType", version.replaceAll(PerfixEnum.NETWORKTYPE.getCode(), ""));
+                if(StringUtils.isNotBlank(province))
+                HbaseUtil.addRow(tableName, appName + distinctId, CF, "province", province.replaceAll(PerfixEnum.PROVINCE.getCode(), ""));
+                HbaseUtil.addRow(tableName, appName + distinctId, CF, "os", os.replaceAll(PerfixEnum.OS.getCode(), ""));
+                HbaseUtil.addRow(tableName, appName + distinctId, CF, "model", model.replaceAll(PerfixEnum.MODEL.getCode(), ""));
+                HbaseUtil.addRow(tableName, appName + distinctId, CF, "resolutionRatio", resolutionRatio.replaceAll(PerfixEnum.RESOLUTIONRATIO.getCode(), ""));
+                HbaseUtil.addRow(tableName, appName + distinctId, CF, "networkType", networkType.replaceAll(PerfixEnum.NETWORKTYPE.getCode(), ""));
                 //TODO 渠道？
             }
 
