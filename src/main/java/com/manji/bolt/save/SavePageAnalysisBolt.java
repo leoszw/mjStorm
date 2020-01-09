@@ -220,6 +220,7 @@ public class SavePageAnalysisBolt implements IRichBolt {
                 HbaseUtil.incrementColumnValue(tableName, appName + version + userGroup + days + screenName, CF, "exitPage", 1L);
                 HbaseUtil.incrementColumnValue(tableName, appName + version + userGroup + days + hour + screenName, CF, "exitPage", 1L);
             }
+            // todo 页面停留时间未统计
         } catch (IOException e) {
             e.printStackTrace();
         }

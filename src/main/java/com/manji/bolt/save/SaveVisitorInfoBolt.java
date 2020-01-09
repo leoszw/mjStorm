@@ -24,7 +24,7 @@ public class SaveVisitorInfoBolt implements IRichBolt {
     String tableName;
     String CF = "cf_infor";
 
-    String appName, distinctId, timestamp, version, province, os, model, resolutionRatio, networkType, screenName, event;
+    String appName, distinctId, timestamp, version, province, os, model, resolutionRatio, networkType, screenName, event, userGroup;
     Long useTime;
 
     public SaveVisitorInfoBolt(String tableName) {
@@ -49,6 +49,8 @@ public class SaveVisitorInfoBolt implements IRichBolt {
         if ("$AppEnd".equals(event)) {
             useTime = input.getLongByField("useTime");
         }
+
+
 
         try {
             /** 用户最近登录信息(在线访客统计信息) **/
@@ -76,15 +78,35 @@ public class SaveVisitorInfoBolt implements IRichBolt {
                 HbaseUtil.addRow(tableName, appName + "EVENT:S" + distinctId + timestamp, CF, "province", province);
                 HbaseUtil.addRow(tableName, appName + "EVENT:S" + distinctId + timestamp, CF, "screenName", screenName);
                 // TODO 渠道？
+
+
+                //版本和用户分组（使用行为统计时使用）
+                HbaseUtil.addRow(tableName, appName + "EVENT:S" + version +distinctId, CF, "dataTime", timestamp);
+                HbaseUtil.addRow(tableName, appName + "EVENT:S" + userGroup + distinctId, CF, "dataTime", timestamp);
+                HbaseUtil.addRow(tableName, appName + "EVENT:S" + version + userGroup + distinctId, CF, "dataTime", timestamp);
             } else if ("$AppViewScreen".equals(event)) {
                 HbaseUtil.addRow(tableName, appName + "EVENT:V" + distinctId + timestamp, CF, "dataTime", timestamp);
                 HbaseUtil.addRow(tableName, appName + "EVENT:V" + distinctId + timestamp, CF, "screenName", screenName);
                 //app页面浏览时间统计 类似于 webStay事件 统计页面停留时间，目前还没有
                 //HbaseUtil.addRow(tableName, appName + "EVENT:V"+distinctId + timestamp,CF,"useTime",useTime);
+
+                //版本和用户分组（使用行为统计时使用）
+                HbaseUtil.addRow(tableName, appName + "EVENT:V" + version +distinctId, CF, "dataTime", timestamp);
+                HbaseUtil.addRow(tableName, appName + "EVENT:V" + userGroup + distinctId, CF, "dataTime", timestamp);
+                HbaseUtil.addRow(tableName, appName + "EVENT:V" + version + userGroup + distinctId, CF, "dataTime", timestamp);
             } else if ("$AppEnd".equals(event)) {
                 HbaseUtil.addRow(tableName, appName + "EVENT:E" + distinctId + timestamp, CF, "dataTime", timestamp);
                 HbaseUtil.addRow(tableName, appName + "EVENT:E" + distinctId + timestamp, CF, "screenName", screenName);
                 HbaseUtil.addRow(tableName, appName + "EVENT:E" + distinctId + timestamp, CF, "useTime", useTime);
+
+                //版本和用户分组（使用行为统计时使用）
+                HbaseUtil.addRow(tableName, appName + "EVENT:V" + version +distinctId, CF, "dataTime", timestamp);
+                HbaseUtil.addRow(tableName, appName + "EVENT:V" + userGroup + distinctId, CF, "dataTime", timestamp);
+                HbaseUtil.addRow(tableName, appName + "EVENT:V" + version + userGroup + distinctId, CF, "dataTime", timestamp);
+
+                HbaseUtil.addRow(tableName, appName + "EVENT:V" + version +distinctId, CF, "useTime", useTime);
+                HbaseUtil.addRow(tableName, appName + "EVENT:V" + userGroup + distinctId, CF, "useTime", useTime);
+                HbaseUtil.addRow(tableName, appName + "EVENT:V" + version + userGroup + distinctId, CF, "useTime", useTime);
             }
 
             //启动间隔查询
@@ -96,6 +118,10 @@ public class SaveVisitorInfoBolt implements IRichBolt {
                 }
                 //保存距上次启动的天数，-1表示首次启动，0 当日，其他 天数差
                 HbaseUtil.addRow(tableName, appName + "EVENT:S" + distinctId + timestamp, CF, "interval", interval);
+
+                HbaseUtil.addRow(tableName, appName + "EVENT:S" + version +distinctId, CF, "interval", interval);
+                HbaseUtil.addRow(tableName, appName + "EVENT:S" + userGroup + distinctId, CF, "interval", interval);
+                HbaseUtil.addRow(tableName, appName + "EVENT:S" + version + userGroup + distinctId, CF, "interval", interval);
             }
 
             /**
